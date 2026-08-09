@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+    <h1>Admin Dashboard - Registered Students</h1>
+    <table id="admin-students-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        function fetchRegisteredStudents() {
+            fetch('resources/students')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#admin-students-table tbody');
+                    tableBody.innerHTML = ''; // Clear existing data
+                    data.forEach(student => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${student.id}</td>
+                            <td>${student.name}</td>
+                            <td>${student.email}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                });
+        }
+
+        // Fetch students when the page loads
+        fetchRegisteredStudents();
+    </script>
+</body>
+</html>

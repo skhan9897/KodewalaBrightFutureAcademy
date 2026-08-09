@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bright Future Academy</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+    <h1>Student Registration</h1>
+    <form id="add-student-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br>
+        <button type="submit">Register</button>
+    </form>
+
+    <div id="payment-section" style="display:none;">
+        <h2>Payment</h2>
+        <p>Click "Pay Now" to complete your registration.</p>
+        <button id="pay-now-button">Pay Now</button>
+    </div>
+
+    <script>
+        let newStudentData = null;
+
+        document.getElementById('add-student-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            newStudentData = { name, email };
+
+            // Hide the form and show the payment section
+            document.getElementById('add-student-form').style.display = 'none';
+            document.getElementById('payment-section').style.display = 'block';
+        });
+
+        document.getElementById('pay-now-button').addEventListener('click', function() {
+            if (newStudentData) {
+                fetch('resources/students', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newStudentData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Student added:', data);
+                    alert('Registration successful!');
+                    // Reset the form and hide the payment section
+                    document.getElementById('add-student-form').reset();
+                    document.getElementById('add-student-form').style.display = 'block';
+                    document.getElementById('payment-section').style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
