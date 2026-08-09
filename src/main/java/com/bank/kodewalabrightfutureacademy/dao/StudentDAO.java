@@ -85,6 +85,37 @@ public class StudentDAO {
         }
     }
 
+    // New: Automatic Approval after payment
+    public void confirmPaymentAndApprove(String phone, String paymentStatus) {
+        String batchNumber = "BATCH-" + java.time.LocalDate.now().getMonthValue() + java.time.LocalDate.now().getYear();
+        
+        // Find the student ID to generate KA-ID
+        String findSql = "SELECT id FROM students WHERE phone = ? ORDER BY id DESC LIMIT 1";
+        String updateSql = "UPDATE students SET status = 'Approved', payment_status = ?, student_id = ?, batch_number = ? WHERE phone = ? ORDER BY id DESC LIMIT 1";
+        
+        try (Connection conn = DBConnection.getConnection()) {
+            int dbId = 0;
+            try (PreparedStatement pst = conn.prepareStatement(findSql)) {
+                pst.setString(1, phone);
+                ResultSet rs = pst.executeQuery();
+                if (rs.next()) dbId = rs.getInt("id");
+            }
+            
+            if (dbId > 0) {
+                String studentId = "KA" + String.format("%03d", dbId);
+                try (PreparedStatement pst = conn.prepareStatement(updateSql)) {
+                    pst.setString(1, paymentStatus);
+                    pst.setString(2, studentId);
+                    pst.setString(3, batchNumber);
+                    pst.setString(4, phone);
+                    pst.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void deleteStudent(int id) {
         String sql = "DELETE FROM students WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();

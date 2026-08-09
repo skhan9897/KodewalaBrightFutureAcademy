@@ -38,10 +38,24 @@ public class StudentResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response registerStudent(Student student) {
+        student.setStatus("Pending");
+        student.setPaymentStatus("Payment Pending");
         studentDAO.addStudent(student);
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");
-        response.put("message", "Student registered successfully");
         return Response.status(Response.Status.CREATED).entity(response).build();
+    }
+
+    @POST
+    @Path("confirm-payment")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response confirmPayment(Map<String, String> data) {
+        String phone = data.get("phone");
+        String paymentId = data.get("paymentId");
+        studentDAO.confirmPaymentAndApprove(phone, "Paid: " + paymentId);
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "success");
+        return Response.ok(response).build();
     }
 }
