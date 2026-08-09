@@ -307,13 +307,18 @@
     <script>
         let lastDataHash = '';
 
-        // Smooth Live Refresh without full page reload
         function refreshData() {
-            fetch('api/admissions')
-                .then(response => response.json())
+            // Using context-aware path
+            const apiUrl = 'api/admissions';
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
                 .then(data => {
                     const currentHash = JSON.stringify(data);
-                    if (currentHash === lastDataHash) return; // Don't re-render if data is same
+                    if (currentHash === lastDataHash) return;
 
                     lastDataHash = currentHash;
                     const tbody = document.getElementById('student-data-body');
@@ -322,19 +327,19 @@
                     let html = '';
                     data.forEach(student => {
                         const sid = (student.studentId === null || student.studentId === 'PENDING') ? '<span style="color:#94a3b8">WAITING</span>' : student.studentId;
-                        const statusClass = student.status.toLowerCase();
+                        const statusClass = (student.status || 'pending').toLowerCase();
 
                         html += `<tr>
                             <td><strong>${sid}</strong></td>
                             <td>
-                                <div style="font-weight: 700; color: #1e293b;">${student.name}</div>
-                                <div style="font-size: 12px; color: #64748b;">${student.email}</div>
+                                <div style="font-weight: 700; color: #1e293b;">${student.name || 'N/A'}</div>
+                                <div style="font-size: 12px; color: #64748b;">${student.email || ''}</div>
                             </td>
-                            <td style="font-weight: 600;">${student.phone}</td>
-                            <td><span style="background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-size: 12px;">${student.paymentMethod}</span></td>
+                            <td style="font-weight: 600;">${student.phone || 'N/A'}</td>
+                            <td><span style="background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-size: 12px;">${student.paymentMethod || 'N/A'}</span></td>
                             <td>
-                                <span class="status-badge status-${statusClass}">${student.status}</span>
-                                <div style="font-size: 10px; margin-top: 4px; color: #64748b;">${student.paymentStatus}</div>
+                                <span class="status-badge status-${statusClass}">${student.status || 'Pending'}</span>
+                                <div style="font-size: 10px; margin-top: 4px; color: #64748b;">${student.paymentStatus || ''}</div>
                             </td>
                             <td>
                                 <div class="action-group">
@@ -349,10 +354,10 @@
                         </tr>`;
                     });
                     tbody.innerHTML = html;
-                });
+                })
+                .catch(err => console.error('Dashboard Sync Error:', err));
         }
 
-        // Refresh every 1 second for "Instant" feel
         setInterval(refreshData, 1000);
         refreshData();
     </script>
