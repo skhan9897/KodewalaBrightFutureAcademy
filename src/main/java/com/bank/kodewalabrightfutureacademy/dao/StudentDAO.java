@@ -70,4 +70,29 @@ public class StudentDAO {
             e.printStackTrace();
         }
     }
+
+    public void updateStudentStatus(int id, String studentId, String batchNumber, String status) {
+        String sql = "UPDATE students SET student_id = ?, batch_number = ?, status = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, studentId);
+            stmt.setString(2, batchNumber);
+            stmt.setString(3, status);
+            stmt.setInt(4, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteStudent(int id) {
+        String sql = "DELETE FROM students WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

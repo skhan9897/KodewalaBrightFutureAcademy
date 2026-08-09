@@ -28,12 +28,34 @@ public class StudentServlet extends HttpServlet {
         String action = request.getParameter("action");
         StudentDAO studentDAO = (StudentDAO) getServletContext().getAttribute("studentDAO");
 
-        if ("confirmPayment".equals(action)) {
+        if ("approve".equals(action)) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            // Generate a simple Student ID like KA01, KA02 based on the DB ID
+            String studentId = "KA" + String.format("%03d", id);
+            String batchNumber = "BATCH-" + java.time.LocalDate.now().getMonthValue() + java.time.LocalDate.now().getYear();
+            
+            studentDAO.updateStudentStatus(id, studentId, batchNumber, "Approved");
+            response.sendRedirect(request.getContextPath() + "/students");
+        } else if ("reject".equals(action)) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            studentDAO.updateStudentStatus(id, "REJECTED", "NONE", "Rejected");
+            response.sendRedirect(request.getContextPath() + "/students");
+        } else if ("delete".equals(action)) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            studentDAO.deleteStudent(id);
+            response.sendRedirect(request.getContextPath() + "/students");
+        } else if ("confirmPayment".equals(action)) {
             String name = request.getParameter("name");
             String email = request.getParameter("email");
             String phone = request.getParameter("phone");
             
-            Student student = new Student(0, name, email, phone); // ID is auto-incremented by the database
+            Student student = new Student();
+            student.setName(name);
+            student.setEmail(email);
+            student.setPhone(phone);
+            student.setStatus("Pending");
+            student.setPaymentStatus("Awaiting Verification");
+
             studentDAO.addStudent(student);
             
             response.sendRedirect(request.getContextPath() + "/index.jsp?success=true");
