@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: kodewala-academy-api
+    env: docker
+    plan: free
+    region: ohio
+    healthCheckPath: /admin-web/dashboard

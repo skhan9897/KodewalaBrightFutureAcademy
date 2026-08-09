@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kodewala Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #1A237E;
+            --dark-blue: #0D1B3E;
+            --yellow: #FBC02D;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark-blue), var(--blue));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .splash-container {
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .logo-circle {
+            width: 180px;
+            height: 180px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            border: 3px solid var(--yellow);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 30px;
+            box-shadow: 0 0 30px rgba(251, 192, 45, 0.2);
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        .logo-text-large {
+            color: var(--yellow);
+            font-weight: 900;
+            font-size: 24px;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        .logo-text-small {
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .badges {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.8s forwards 0.5s;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            margin: 10px 0;
+            display: inline-block;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); border-color: var(--yellow); }
+            50% { transform: scale(1.05); border-color: white; }
+        }
+
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--yellow);
+            animation: spin 1s ease-in-out infinite;
+            margin: 30px auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="splash-container">
+        <div class="logo-circle">
+            <h1 class="logo-text-large">KODEWALA</h1>
+            <p class="logo-text-small">ACADEMY</p>
+        </div>
+
+        <div class="badges">
+            <div class="badge">✓ 100% Job Placement</div><br>
+            <div class="badge">✓ Industrial Projects</div><br>
+            <div class="badge">✓ Expert Mentorship</div>
+            <div class="loader"></div>
+        </div>
+    </div>
+
+    <script>
+        // Redirect to login after splash animation
+        setTimeout(() => {
+            window.location.href = '/login';
+        }, 3500);
+    </script>
+</body>
+</html>

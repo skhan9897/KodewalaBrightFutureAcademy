@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Kodewala Academy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --blue: #1A237E;
+            --dark-blue: #0D1B3E;
+            --yellow: #FBC02D;
+            --white: #ffffff;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-blue);
+            color: var(--white);
+            min-height: 100vh;
+        }
+        .sidebar {
+            background: rgba(0,0,0,0.2);
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            padding: 30px;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+        .main-content {
+            margin-left: 280px;
+            padding: 40px;
+        }
+        .card-custom {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+        }
+        .table {
+            color: white;
+            --bs-table-bg: transparent;
+            --bs-table-hover-bg: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255,255,255,0.05);
+        }
+        th { color: var(--yellow); font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        .pending { background: rgba(251, 192, 45, 0.1); color: var(--yellow); border: 1px solid var(--yellow); }
+        .approved { background: rgba(76, 175, 80, 0.1); color: #4CAF50; border: 1px solid #4CAF50; }
+        .rejected { background: rgba(229, 57, 53, 0.1); color: #E53935; border: 1px solid #E53935; }
+
+        .btn-action {
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 6px 15px;
+            transition: 0.3s;
+        }
+        .btn-approve { background: var(--yellow); color: var(--dark-blue); border: none; }
+        .btn-approve:hover { background: #f9a825; }
+        .btn-reject { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; }
+        .btn-reject:hover { background: rgba(255,0,0,0.1); }
+
+        .student-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: crop;
+            border: 1px solid var(--yellow);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2 style="font-weight: 900; color: var(--yellow);">KODEWALA</h2>
+        <p class="small text-white-50">ACADEMY ADMIN</p>
+
+        <div class="mt-5">
+            <div class="p-3 mb-2 rounded-3" style="background: rgba(251, 192, 45, 0.1); color: white; font-weight: 600;">
+                <i class="bi bi-grid-fill me-2 text-warning"></i> Dashboard
+            </div>
+            <div class="p-3 mb-2 opacity-50"><i class="bi bi-people-fill me-2"></i> Students</div>
+            <div class="p-3 mb-2 opacity-50"><i class="bi bi-play-circle-fill me-2"></i> Videos</div>
+            <div class="p-3 mb-2 opacity-50"><i class="bi bi-chat-dots-fill me-2"></i> Messages</div>
+        </div>
+
+        <div style="position: absolute; bottom: 30px; width: 220px;">
+            <a href="/login" class="text-white text-decoration-none opacity-50"><i class="bi bi-box-arrow-left me-2"></i> Logout</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h1 style="font-weight: 800;">Recent Applications</h1>
+                <p class="text-white-50">Review and manage student enrollments</p>
+            </div>
+            <div class="card-custom">
+                <span style="color: var(--yellow); font-weight: 800;" th:text="${students.size()} + ' Applicants'">0 Applicants</span>
+            </div>
+        </div>
+
+        <div class="card-custom">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Student Details</th>
+                        <th>Qualification</th>
+                        <th>Payment Plan</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="student : ${students}">
+                        <td>
+                            <img th:if="${student.imageUrl}" th:src="${student.imageUrl}" class="student-img">
+                            <i th:unless="${student.imageUrl}" class="bi bi-person-circle fs-3 text-white-50"></i>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600;" th:text="${student.name}">Sajid Khan</div>
+                            <small class="text-white-50" th:text="${student.phone}">+91 00000 00000</small>
+                        </td>
+                        <td th:text="${student.qualification}">B.Tech</td>
+                        <td>
+                            <div th:text="${student.paymentMethod}">EMI</div>
+                            <small class="text-white-50" th:text="${student.paymentStatus}">Awaiting</small>
+                        </td>
+                        <td>
+                            <span th:class="'status-badge ' + ${#strings.toLowerCase(student.status)}"
+                                  th:text="${student.status}">Pending</span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <form th:action="@{'/admin-web/approve/' + ${student.id}}" method="post">
+                                    <button type="submit" class="btn-action btn-approve btn-sm">Approve</button>
+                                </form>
+                                <form th:action="@{'/admin-web/reject/' + ${student.id}}" method="post">
+                                    <button type="submit" class="btn-action btn-reject btn-sm">Reject</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

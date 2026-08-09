@@ -1,0 +1,13 @@
+com\kodewala\academy\AdminServlet.class
+com\kodewala\academy\LoginServlet.class
+com\kodewala\academy\AdminWebController.class
+com\kodewala\academy\AdmissionsApiServlet.class
+com\kodewala\academy\DBConnection.class
+com\kodewala\academy\model\Batch.class
+com\kodewala\academy\FirebaseService.class
+com\kodewala\academy\PlacementsApiServlet.class
+com\kodewala\academy\DatabaseSetup.class
+com\kodewala\academy\StudentApiServlet.class
+com\kodewala\academy\model\Student.class
+com\kodewala\academy\KodewalaAcademyApplication.class
+com\kodewala\academy\model\Placement.class
