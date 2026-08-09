@@ -48,13 +48,16 @@ public class StudentServlet extends HttpServlet {
             String name = request.getParameter("name");
             String email = request.getParameter("email");
             String phone = request.getParameter("phone");
+            String paymentId = request.getParameter("razorpay_payment_id");
             
             Student student = new Student();
             student.setName(name);
             student.setEmail(email);
             student.setPhone(phone);
             student.setStatus("Pending");
-            student.setPaymentStatus("Awaiting Verification");
+            student.setPaymentMethod("Full Payment (Online)");
+            student.setPaymentStatus("Paid - " + paymentId);
+            student.setTotalAmount(35000);
 
             studentDAO.addStudent(student);
             

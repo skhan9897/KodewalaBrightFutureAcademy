@@ -11,13 +11,21 @@
             height: 100vh;
             margin: 0;
             overflow: hidden;
-            background: radial-gradient(circle, #1a237e, #0d1b3e);
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .spinner-container {
             position: relative;
-            width: 300px;
-            height: 300px;
+            width: 400px;
+            height: 400px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -31,57 +39,47 @@
             padding: 5px;
             background: white;
             z-index: 10;
-            box-shadow: 0 0 20px rgba(251, 192, 45, 0.4);
+            box-shadow: 0 0 25px rgba(251, 192, 45, 0.5);
+            /* Logo now spins in the center and pulses */
+            animation: logo-spin 8s linear infinite, pulse-border 2s infinite;
         }
 
-        /* Orbiting and Spinning Star */
-        .star-orbit {
+        /* Large Transparent Spinning Star */
+        .big-star {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            animation: orbit-rotate 4s linear infinite;
-        }
-
-        .star {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 40px;
-            background: #fbc02d; /* Same color as the logo's border line */
+            width: 300px;
+            height: 300px;
+            background: rgba(251, 192, 45, 0.15); /* Transparent Gold/Yellow */
             clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            animation: star-spin 2s linear infinite;
-            box-shadow: 0 0 15px #fbc02d;
+            animation: star-spin 5s linear infinite;
+            z-index: 5;
+            filter: drop-shadow(0 0 15px #fbc02d);
         }
 
-        @keyframes orbit-rotate {
+        @keyframes star-spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        @keyframes star-spin {
-            from { transform: translateX(-50%) rotate(0deg); }
-            to { transform: translateX(-50%) rotate(360deg); }
+        @keyframes logo-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         /* Pulsing effect for the logo border */
         @keyframes pulse-border {
             0% { box-shadow: 0 0 0 0 rgba(251, 192, 45, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(251, 192, 45, 0); }
+            70% { box-shadow: 0 0 0 20px rgba(251, 192, 45, 0); }
             100% { box-shadow: 0 0 0 0 rgba(251, 192, 45, 0); }
-        }
-
-        .central-logo {
-            animation: pulse-border 2s infinite;
         }
     </style>
 </head>
 <body>
     <div class="spinner-container">
-        <div class="star-orbit">
-            <div class="star"></div>
-        </div>
+        <!-- The Large Transparent Spinning Star -->
+        <div class="big-star"></div>
+
+        <!-- The Logo spinning in the center -->
         <img src="images/logo.png" class="central-logo" alt="Logo">
     </div>
 </body>
