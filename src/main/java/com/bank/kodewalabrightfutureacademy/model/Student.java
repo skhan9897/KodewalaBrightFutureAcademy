@@ -1,5 +1,8 @@
 package com.bank.kodewalabrightfutureacademy.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Student {
     private int id;
     private String studentId;
@@ -19,10 +22,9 @@ public class Student {
     private String adminMessage;
     private long timestamp;
 
-    public Student() {
-    }
+    public Student() {}
 
-    // Getters and Setters
+    // Standard getters and setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

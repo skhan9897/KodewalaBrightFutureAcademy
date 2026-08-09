@@ -40,6 +40,7 @@ public class StudentDAO {
                 students.add(student);
             }
         } catch (SQLException e) {
+            System.err.println("Error fetching students: " + e.getMessage());
             e.printStackTrace();
         }
         return students;
@@ -57,16 +58,18 @@ public class StudentDAO {
             stmt.setString(6, student.getQualification());
             stmt.setString(7, student.getAcademicGap());
             stmt.setString(8, student.getPaymentMethod());
-            stmt.setInt(9, student.getTotalAmount());
+            stmt.setInt(9, student.getTotalAmount() > 0 ? student.getTotalAmount() : 35000);
             stmt.setString(10, student.getImageUrl());
-            stmt.setString(11, student.getStatus());
-            stmt.setString(12, student.getPaymentStatus());
+            stmt.setString(11, student.getStatus() != null ? student.getStatus() : "Pending");
+            stmt.setString(12, student.getPaymentStatus() != null ? student.getPaymentStatus() : "Pending");
             stmt.setBoolean(13, student.isIsBlocked());
             stmt.setInt(14, student.getBalanceAmount());
             stmt.setString(15, student.getAdminMessage());
             stmt.setLong(16, System.currentTimeMillis());
             stmt.executeUpdate();
+            System.out.println("Student added successfully: " + student.getName());
         } catch (SQLException e) {
+            System.err.println("Error adding student: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -85,20 +88,18 @@ public class StudentDAO {
         }
     }
 
-    // New: Automatic Approval after payment
     public void confirmPaymentAndApprove(String phone, String paymentStatus) {
         String batchNumber = "BATCH-" + java.time.LocalDate.now().getMonthValue() + java.time.LocalDate.now().getYear();
-        
-        // Find the student ID to generate KA-ID
         String findSql = "SELECT id FROM students WHERE phone = ? ORDER BY id DESC LIMIT 1";
-        String updateSql = "UPDATE students SET status = 'Approved', payment_status = ?, student_id = ?, batch_number = ? WHERE phone = ? ORDER BY id DESC LIMIT 1";
+        String updateSql = "UPDATE students SET status = 'Approved', payment_status = ?, student_id = ?, batch_number = ? WHERE id = ?";
         
         try (Connection conn = DBConnection.getConnection()) {
             int dbId = 0;
             try (PreparedStatement pst = conn.prepareStatement(findSql)) {
                 pst.setString(1, phone);
-                ResultSet rs = pst.executeQuery();
-                if (rs.next()) dbId = rs.getInt("id");
+                try (ResultSet rs = pst.executeQuery()) {
+                    if (rs.next()) dbId = rs.getInt("id");
+                }
             }
             
             if (dbId > 0) {
@@ -107,7 +108,7 @@ public class StudentDAO {
                     pst.setString(1, paymentStatus);
                     pst.setString(2, studentId);
                     pst.setString(3, batchNumber);
-                    pst.setString(4, phone);
+                    pst.setInt(4, dbId);
                     pst.executeUpdate();
                 }
             }
