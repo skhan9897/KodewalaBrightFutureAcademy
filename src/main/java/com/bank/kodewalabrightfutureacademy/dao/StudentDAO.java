@@ -40,8 +40,7 @@ public class StudentDAO {
                 students.add(student);
             }
         } catch (SQLException e) {
-            System.err.println("Error fetching students: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("SQL ERROR (getAllStudents): " + e.getMessage());
         }
         return students;
     }
@@ -50,8 +49,9 @@ public class StudentDAO {
         String sql = "INSERT INTO students (student_id, batch_number, name, phone, email, qualification, academic_gap, payment_method, total_amount, image_url, status, payment_status, is_blocked, balance_amount, admin_message, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, student.getStudentId());
-            stmt.setString(2, student.getBatchNumber());
+            
+            stmt.setString(1, student.getStudentId() != null ? student.getStudentId() : "PENDING");
+            stmt.setString(2, student.getBatchNumber() != null ? student.getBatchNumber() : "PENDING");
             stmt.setString(3, student.getName());
             stmt.setString(4, student.getPhone());
             stmt.setString(5, student.getEmail());
@@ -66,10 +66,13 @@ public class StudentDAO {
             stmt.setInt(14, student.getBalanceAmount());
             stmt.setString(15, student.getAdminMessage());
             stmt.setLong(16, System.currentTimeMillis());
-            stmt.executeUpdate();
-            System.out.println("Student added successfully: " + student.getName());
+            
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("SUCCESS: Student added to DB -> " + student.getName());
+            }
         } catch (SQLException e) {
-            System.err.println("Error adding student: " + e.getMessage());
+            System.err.println("SQL ERROR (addStudent): " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -84,7 +87,7 @@ public class StudentDAO {
             stmt.setInt(4, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("SQL ERROR (updateStudentStatus): " + e.getMessage());
         }
     }
 
@@ -110,10 +113,11 @@ public class StudentDAO {
                     pst.setString(3, batchNumber);
                     pst.setInt(4, dbId);
                     pst.executeUpdate();
+                    System.out.println("AUTO-APPROVED: Student Phone " + phone + " with ID " + studentId);
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("SQL ERROR (confirmPaymentAndApprove): " + e.getMessage());
         }
     }
 
@@ -124,7 +128,7 @@ public class StudentDAO {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("SQL ERROR (deleteStudent): " + e.getMessage());
         }
     }
 }

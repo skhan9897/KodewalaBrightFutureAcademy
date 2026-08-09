@@ -1,10 +1,18 @@
 package com.bank.kodewalabrightfutureacademy.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Student {
+    
+    // Primary key for DB
     private int id;
+    
+    // For handling the String ID from Firestore/Android App without crashing
+    @JsonProperty("id")
+    private String androidId;
+
     private String studentId;
     private String batchNumber;
     private String name;
@@ -24,9 +32,12 @@ public class Student {
 
     public Student() {}
 
-    // Standard getters and setters
+    // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
+
+    public String getAndroidId() { return androidId; }
+    public void setAndroidId(String androidId) { this.androidId = androidId; }
 
     public String getStudentId() { return studentId; }
     public void setStudentId(String studentId) { this.studentId = studentId; }
