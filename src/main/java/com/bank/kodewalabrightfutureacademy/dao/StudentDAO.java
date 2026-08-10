@@ -33,7 +33,7 @@ public class StudentDAO {
                 student.setImageUrl(rs.getString("image_url"));
                 student.setStatus(rs.getString("status"));
                 student.setPaymentStatus(rs.getString("payment_status"));
-                student.setIsBlocked(rs.getBoolean("is_blocked"));
+                student.setBlocked(rs.getBoolean("is_blocked"));
                 student.setBalanceAmount(rs.getInt("balance_amount"));
                 student.setAdminMessage(rs.getString("admin_message"));
                 student.setTimestamp(rs.getLong("timestamp"));
@@ -62,7 +62,7 @@ public class StudentDAO {
             stmt.setString(10, student.getImageUrl());
             stmt.setString(11, student.getStatus() != null ? student.getStatus() : "Pending");
             stmt.setString(12, student.getPaymentStatus() != null ? student.getPaymentStatus() : "Pending");
-            stmt.setBoolean(13, student.isIsBlocked());
+            stmt.setBoolean(13, student.isBlocked());
             stmt.setInt(14, student.getBalanceAmount());
             stmt.setString(15, student.getAdminMessage());
             stmt.setLong(16, System.currentTimeMillis());

@@ -5,14 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Student {
-    
-    // Primary key for DB
     private int id;
     
-    // For handling the String ID from Firestore/Android App without crashing
     @JsonProperty("id")
     private String androidId;
-
+    
     private String studentId;
     private String batchNumber;
     private String name;
@@ -25,7 +22,10 @@ public class Student {
     private String imageUrl;
     private String status;
     private String paymentStatus;
-    private boolean isBlocked;
+    
+    @JsonProperty("isBlocked")
+    private boolean blocked;
+    
     private int balanceAmount;
     private String adminMessage;
     private long timestamp;
@@ -75,8 +75,8 @@ public class Student {
     public String getPaymentStatus() { return paymentStatus; }
     public void setPaymentStatus(String paymentStatus) { this.paymentStatus = paymentStatus; }
 
-    public boolean isIsBlocked() { return isBlocked; }
-    public void setIsBlocked(boolean isBlocked) { this.isBlocked = isBlocked; }
+    public boolean isBlocked() { return blocked; }
+    public void setBlocked(boolean blocked) { this.blocked = blocked; }
 
     public int getBalanceAmount() { return balanceAmount; }
     public void setBalanceAmount(int balanceAmount) { this.balanceAmount = balanceAmount; }
