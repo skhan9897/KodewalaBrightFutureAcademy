@@ -78,6 +78,9 @@
             color: #ffdddd;
             margin-bottom: 15px;
             font-size: 14px;
+            background-color: rgba(255, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -87,6 +90,9 @@
 
         <% if ("true".equals(request.getParameter("error"))) { %>
             <p class="error-message">Invalid username or password.</p>
+        <% } %>
+        <% if ("true".equals(request.getParameter("db_error"))) { %>
+            <p class="error-message">Error: Could not connect to the database. Please contact support.</p>
         <% } %>
 
         <form action="login" method="post" style="width:100%; text-align:center;">

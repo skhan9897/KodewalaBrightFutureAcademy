@@ -15,11 +15,17 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        // Check for database connection error first
+        if (getServletContext().getAttribute("dbConnectionError") != null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp?db_error=true");
+            return;
+        }
+
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         UserDAO userDAO = (UserDAO) getServletContext().getAttribute("userDAO");
 
-        // Fixed: Allow hardcoded admin credentials or check database
         if (("kodewala123".equals(username) && "Admin123".equals(password)) || 
             (userDAO != null && userDAO.isValidUser(username, password))) {
 

@@ -1,9 +1,2 @@
-package com.bank.kodewalabrightfutureacademy;
-
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-
-@ApplicationPath("/api")
-public class JAXRSConfiguration extends Application {
-    
-}
+// This file is intentionally left blank to resolve a build conflict.
+// The functionality has been migrated to servlets.

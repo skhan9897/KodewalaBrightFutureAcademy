@@ -29,6 +29,8 @@ public class Student {
     private int balanceAmount;
     private String adminMessage;
     private long timestamp;
+    private String referredBy;
+    private long registrationDate;
 
     public Student() {}
 
@@ -86,4 +88,10 @@ public class Student {
 
     public long getTimestamp() { return timestamp; }
     public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+
+    public String getReferredBy() { return referredBy; }
+    public void setReferredBy(String referredBy) { this.referredBy = referredBy; }
+
+    public long getRegistrationDate() { return registrationDate; }
+    public void setRegistrationDate(long registrationDate) { this.registrationDate = registrationDate; }
 }
