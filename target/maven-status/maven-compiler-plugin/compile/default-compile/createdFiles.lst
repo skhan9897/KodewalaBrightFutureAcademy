@@ -2,6 +2,7 @@ com\bank\kodewalabrightfutureacademy\controller\StudentServlet.class
 com\bank\kodewalabrightfutureacademy\dao\PlacementDAO.class
 com\kodewala\academy\model\Batch.class
 com\bank\kodewalabrightfutureacademy\controller\LoginServlet.class
+com\bank\kodewalabrightfutureacademy\controller\PaymentApiServlet.class
 com\bank\kodewalabrightfutureacademy\model\Student.class
 com\bank\kodewalabrightfutureacademy\dao\StudentDAO.class
 com\bank\kodewalabrightfutureacademy\util\DBConnection.class
