@@ -59,6 +59,7 @@
         .modal-content { background-color: #fff; margin: 2% auto; width: 90%; max-width: 650px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); overflow: hidden; animation: slide-up 0.4s ease; }
         @keyframes slide-up { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .modal-header { padding: 20px; background: #1a237e; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { margin: 0; }
         .modal-body { padding: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .form-group { display: flex; flex-direction: column; gap: 5px; }
         .form-group.full-width { grid-column: 1 / -1; }
@@ -117,9 +118,13 @@
         </div>
     </div>
 
+    <!-- The Modal -->
     <div id="registerModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h3>New Student Registration</h3><span style="cursor:pointer; font-size:24px;" onclick="closeModal()">&times;</span></div>
+            <div class="modal-header">
+                <h3>New Student Registration</h3>
+                <span style="cursor:pointer; font-size:24px;" onclick="closeModal()">&times;</span>
+            </div>
             <form action="students" method="post">
                 <input type="hidden" name="action" value="register">
                 <div class="modal-body">
@@ -131,7 +136,9 @@
                     <div class="form-group"><label>Total Amount (₹)</label><input type="number" name="total_amount" value="35000"></div>
                     <div class="form-group"><label>Referred By</label><input type="text" name="referred_by"></div>
                 </div>
-                <div class="modal-footer"><button type="submit" class="btn-submit">Register Student</button></div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn-submit">Register Student</button>
+                </div>
             </form>
         </div>
     </div>
@@ -139,8 +146,22 @@
     <script>
         const UPI_ID = "suresh-bishnoi-hdfc@ybl";
         const ADMIN_NAME = "Suresh Bishnoi";
-        function openModal() { document.getElementById('registerModal').style.display = 'block'; }
-        function closeModal() { document.getElementById('registerModal').style.display = 'none'; }
+
+        function openModal() {
+            document.getElementById('registerModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('registerModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            let modal = document.getElementById('registerModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
 
         function sendPaymentLink(phone, name, amount) {
             const upiUrl = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(ADMIN_NAME)}&am=${amount}&cu=INR&tn=AdmissionFee`;
