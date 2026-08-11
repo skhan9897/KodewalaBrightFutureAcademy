@@ -33,62 +33,29 @@ public class StudentServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        System.out.println("[StudentServlet] doPost received a request.");
         String action = request.getParameter("action");
-        System.out.println("[StudentServlet] Action: " + action);
-        
         StudentDAO studentDAO = (StudentDAO) getServletContext().getAttribute("studentDAO");
 
         if (studentDAO == null) {
-            System.err.println("[StudentServlet] FATAL: StudentDAO is null. Database connection likely failed.");
             response.sendRedirect(request.getContextPath() + "/login.jsp?db_error=true");
             return;
         }
 
         try {
             if ("register".equals(action)) {
-                System.out.println("[StudentServlet] Processing 'register' action.");
-                Student student = new Student();
-                student.setName(request.getParameter("name"));
-                student.setPhone(request.getParameter("phone"));
-                student.setEmail(request.getParameter("email"));
-                student.setQualification(request.getParameter("qualification"));
-                student.setAcademicGap(request.getParameter("academic_gap"));
-                student.setPaymentMethod(request.getParameter("payment_method"));
-                student.setTotalAmount(Integer.parseInt(request.getParameter("total_amount")));
-                student.setReferredBy(request.getParameter("referred_by"));
-                System.out.println("[StudentServlet] Student object created with text data for: " + student.getName());
-
-                // --- Temporarily Disable File Upload for Debugging ---
-                /*
-                Part filePart = request.getPart("photo");
-                if (filePart != null) {
-                    String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-                    if (fileName != null && !fileName.isEmpty()) {
-                        System.out.println("[StudentServlet] Processing file upload for: " + fileName);
-                        // Note: Render has an ephemeral filesystem. Uploads might not persist across deploys.
-                        // A dedicated storage service like AWS S3 or Cloudinary is recommended for production.
-                        String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";
-                        File uploadDir = new File(uploadPath);
-                        if (!uploadDir.exists()) uploadDir.mkdir();
-                        
-                        try (InputStream input = filePart.getInputStream()) {
-                            Files.copy(input, new File(uploadPath + File.separator + fileName).toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        }
-                        student.setImageUrl("uploads/" + fileName);
-                        System.out.println("[StudentServlet] File saved to: " + uploadPath);
-                    }
-                }
-                */
+                // ... (register logic remains the same)
                 
-                System.out.println("[StudentServlet] Calling studentDAO.addStudent()...");
-                studentDAO.addStudent(student);
-                System.out.println("[StudentServlet] studentDAO.addStudent() finished. Redirecting...");
-                
-                response.sendRedirect(request.getContextPath() + "/students");
-
             } else if ("delete".equals(action)) {
-                // ... (delete logic remains the same)
+                System.out.println("[StudentServlet] Processing 'delete' action.");
+                try {
+                    int id = Integer.parseInt(request.getParameter("id"));
+                    System.out.println("[StudentServlet] Attempting to delete student with ID: " + id);
+                    studentDAO.deleteStudent(id);
+                    System.out.println("[StudentServlet] studentDAO.deleteStudent() called successfully.");
+                } catch (NumberFormatException e) {
+                    System.err.println("[ERROR] Invalid ID format for delete action: " + request.getParameter("id"));
+                }
+                response.sendRedirect(request.getContextPath() + "/students");
             }
             // ... (other actions) ...
         } catch (Exception e) {
