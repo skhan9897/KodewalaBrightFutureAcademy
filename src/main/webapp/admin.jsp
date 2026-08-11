@@ -21,11 +21,14 @@
         .sidebar-menu { flex: 1; margin-top: 25px; overflow-y: auto; }
         .menu-item { padding: 14px 25px; display: flex; align-items: center; color: rgba(255,255,255,0.8); text-decoration: none; transition: all 0.3s ease; font-weight: 500; cursor: pointer; }
         .menu-item i { margin-right: 15px; width: 20px; text-align: center; }
-        .menu-item:hover, .menu-item.active { background: rgba(255,255,255,0.15); color: #fbc02d; border-left: 4px solid #fbc02d; }
+        .menu-item:hover, .menu-item.active { background: rgba(255,255,255,0.15); color: #fbc02d; border-left: 5px solid #fbc02d; }
 
         .sidebar-footer { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .logout-btn { background: #d32f2f; color: white; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; transition: 0.3s; }
+        .footer-btn { display: flex; align-items: center; justify-content: center; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: 0.3s; font-size: 14px; color: white; }
+        .logout-btn { background: #d32f2f; }
         .logout-btn:hover { background: #b71c1c; }
+        .support-btn { background: #25d366; }
+        .support-btn:hover { background: #128c7e; }
 
         .main-content { flex: 1; overflow-y: auto; padding: 40px; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(8px); }
         .content-card { background: rgba(255, 255, 255, 0.96); padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); }
@@ -52,26 +55,21 @@
         .pay-link { background: #673ab7; }
         .delete { background: #ef4444; }
 
-        /* Modal Styling */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px); overflow-y: auto; }
         .modal-content { background-color: #fff; margin: 2% auto; width: 90%; max-width: 650px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); overflow: hidden; animation: slide-up 0.4s ease; }
         @keyframes slide-up { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .modal-header { padding: 20px; background: #1a237e; color: white; display: flex; justify-content: space-between; align-items: center; }
-        .modal-header h3 { margin: 0; }
         .modal-body { padding: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .form-group { display: flex; flex-direction: column; gap: 5px; }
         .form-group.full-width { grid-column: 1 / -1; }
         .form-group label { font-size: 12px; font-weight: bold; color: #64748b; }
-        .form-group input, .form-group select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
-        .modal-footer { padding: 15px 25px; background: #f8fafc; text-align: right; border-top: 1px solid #eee; }
-        .btn-submit { background: #1a237e; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-submit:hover { background: #283593; }
+        .form-group input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .modal-footer { padding: 15px 25px; background: #f8fafc; text-align: right; }
+        .btn-submit { background: #1a237e; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="bg-container"></div>
-
-    <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>KODEWALA</h2>
@@ -87,11 +85,15 @@
             <div class="menu-item"><i class="fas fa-cog"></i> Settings</div>
         </div>
         <div class="sidebar-footer">
-            <a href="login.jsp" class="logout-btn"><i class="fas fa-power-off"></i> Logout</a>
+            <a href="https://wa.me/919900508043" target="_blank" class="footer-btn support-btn">
+                <i class="fab fa-whatsapp"></i> WhatsApp Support
+            </a>
+            <a href="login.jsp" class="footer-btn logout-btn">
+                <i class="fas fa-power-off"></i> Logout
+            </a>
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <div class="content-card">
             <div class="header">
@@ -100,7 +102,6 @@
                     <i class="fas fa-plus"></i> Register Student
                 </button>
             </div>
-
             <table>
                 <thead>
                     <tr>
@@ -111,34 +112,26 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="student-data-body">
-                    <tr><td colspan="5" style="text-align:center; padding:50px;">Loading student records...</td></tr>
-                </tbody>
+                <tbody id="student-data-body"></tbody>
             </table>
         </div>
     </div>
 
-    <!-- Add Student Modal -->
     <div id="registerModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3>New Student Registration</h3>
-                <span style="cursor:pointer; font-size:24px;" onclick="closeModal()">&times;</span>
-            </div>
+            <div class="modal-header"><h3>New Student Registration</h3><span style="cursor:pointer; font-size:24px;" onclick="closeModal()">&times;</span></div>
             <form action="students" method="post">
                 <input type="hidden" name="action" value="register">
                 <div class="modal-body">
-                    <div class="form-group"><label>Full Name</label><input type="text" name="name" required placeholder="Full Name"></div>
-                    <div class="form-group"><label>Phone Number</label><input type="text" name="phone" required placeholder="Phone Number"></div>
-                    <div class="form-group full-width"><label>Email Address</label><input type="email" name="email" required placeholder="email@example.com"></div>
-                    <div class="form-group"><label>Highest Qualification</label><input type="text" name="qualification" placeholder="B.Tech, MBA, etc."></div>
-                    <div class="form-group"><label>Academic Gap (Years)</label><input type="text" name="academic_gap" placeholder="e.g. 1 Year"></div>
+                    <div class="form-group"><label>Full Name</label><input type="text" name="name" required></div>
+                    <div class="form-group"><label>Phone Number</label><input type="text" name="phone" required></div>
+                    <div class="form-group full-width"><label>Email Address</label><input type="email" name="email" required></div>
+                    <div class="form-group"><label>Highest Qualification</label><input type="text" name="qualification"></div>
+                    <div class="form-group"><label>Academic Gap (Years)</label><input type="text" name="academic_gap"></div>
                     <div class="form-group"><label>Total Amount (₹)</label><input type="number" name="total_amount" value="35000"></div>
-                    <div class="form-group"><label>Referred By</label><input type="text" name="referred_by" placeholder="Referred Person Name"></div>
+                    <div class="form-group"><label>Referred By</label><input type="text" name="referred_by"></div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn-submit">Register Student</button>
-                </div>
+                <div class="modal-footer"><button type="submit" class="btn-submit">Register Student</button></div>
             </form>
         </div>
     </div>
@@ -146,7 +139,6 @@
     <script>
         const UPI_ID = "suresh-bishnoi-hdfc@ybl";
         const ADMIN_NAME = "Suresh Bishnoi";
-
         function openModal() { document.getElementById('registerModal').style.display = 'block'; }
         function closeModal() { document.getElementById('registerModal').style.display = 'none'; }
 
@@ -156,50 +148,36 @@
             window.open(`https://wa.me/91${phone}?text=${msg}`, '_blank');
         }
 
-        let lastDataHash = '';
+        let lastHash = '';
         function refreshData() {
-            fetch('<%=request.getContextPath()%>/api/admissions')
-                .then(r => r.json())
-                .then(data => {
-                    const currentHash = JSON.stringify(data);
-                    if (currentHash === lastDataHash) return;
-                    lastDataHash = currentHash;
-
-                    const tbody = document.getElementById('student-data-body');
-                    let html = '';
-
-                    if(data.length === 0) {
-                        html = '<tr><td colspan="5" style="text-align:center; padding:50px; color:#999;">No records found.</td></tr>';
-                    } else {
-                        data.forEach(s => {
-                            const statusClass = (s.status || 'pending').toLowerCase();
-                            const amount = s.totalAmount || 35000;
-                            html += `<tr>
-                                <td><strong>${s.studentId || 'WAITING'}</strong></td>
-                                <td>
-                                    <div style="font-weight: 700; color: #1e293b;">${s.name}</div>
-                                    <div style="font-size: 11px; color: #64748b;">${s.email}</div>
-                                </td>
-                                <td>${s.phone}</td>
-                                <td><span class="status-badge status-${statusClass}">${s.status}</span></td>
-                                <td>
-                                    <div class="action-group">
-                                        <button class="btn-icon pay-link" onclick="sendPaymentLink('${s.phone}', '${s.name}', ${amount})" title="Send Payment Link"><i class="fas fa-paper-plane"></i></button>
-                                        <a href="https://wa.me/91${s.phone}" target="_blank" class="btn-icon whatsapp" title="WhatsApp Chat"><i class="fab fa-whatsapp"></i></a>
-                                        <form action="students" method="post" style="margin:0;" onsubmit="return confirm('Delete permanently?')">
-                                            <input type="hidden" name="action" value="delete">
-                                            <input type="hidden" name="id" value="${s.id}">
-                                            <button type="submit" class="btn-icon delete" title="Delete"><i class="fas fa-trash"></i></button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>`;
-                        });
-                    }
-                    tbody.innerHTML = html;
-                }).catch(e => console.error("Sync Error:", e));
+            fetch('<%=request.getContextPath()%>/api/admissions').then(r => r.json()).then(data => {
+                const currentHash = JSON.stringify(data);
+                if (currentHash === lastHash) return;
+                lastHash = currentHash;
+                const tbody = document.getElementById('student-data-body');
+                let html = '';
+                if(data.length === 0) { html = '<tr><td colspan="5" style="text-align:center; padding:50px; color:#999;">No records found.</td></tr>'; }
+                else {
+                    data.forEach(s => {
+                        const statusClass = (s.status || 'pending').toLowerCase();
+                        html += `<tr>
+                            <td><strong>${s.studentId || 'WAITING'}</strong></td>
+                            <td><div style="font-weight:700;">${s.name}</div><div style="font-size:11px; opacity:0.7;">${s.email}</div></td>
+                            <td>${s.phone}</td>
+                            <td><span class="status-badge status-${statusClass}">${s.status}</span></td>
+                            <td>
+                                <div class="action-group">
+                                    <button class="btn-icon pay-link" onclick="sendPaymentLink('${s.phone}', '${s.name}', ${s.totalAmount || 35000})" title="Send Link"><i class="fas fa-paper-plane"></i></button>
+                                    <a href="https://wa.me/91${s.phone}" target="_blank" class="btn-icon whatsapp" title="Chat"><i class="fab fa-whatsapp"></i></a>
+                                    <form action="students" method="post" style="margin:0;"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="${s.id}"><button type="submit" class="btn-icon delete"><i class="fas fa-trash"></i></button></form>
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+                }
+                tbody.innerHTML = html;
+            }).catch(e => console.error(e));
         }
-
         setInterval(refreshData, 1000);
         refreshData();
     </script>
