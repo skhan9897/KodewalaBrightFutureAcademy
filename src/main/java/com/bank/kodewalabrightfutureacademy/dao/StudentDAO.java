@@ -12,7 +12,6 @@ import java.util.List;
 
 public class StudentDAO {
 
-    // Helper method to extract Student from ResultSet
     private Student extractStudentFromResultSet(ResultSet rs) throws SQLException {
         Student student = new Student();
         student.setId(rs.getInt("id"));
@@ -37,7 +36,6 @@ public class StudentDAO {
         return student;
     }
 
-    // Helper method to check if a column exists in the ResultSet
     private boolean hasColumn(ResultSet rs, String columnName) throws SQLException {
         try {
             rs.findColumn(columnName);
@@ -46,8 +44,6 @@ public class StudentDAO {
             return false;
         }
     }
-
-    // --- CRUD Operations ---
 
     public List<Student> getAllStudents() throws SQLException {
         List<Student> students = new ArrayList<>();
@@ -67,28 +63,27 @@ public class StudentDAO {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return extractStudentFromResultSet(rs);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return extractStudentFromResultSet(rs);
+                }
             }
         }
         return null;
     }
 
-    // RESTORED: Method to get student by student_id
     public Student getStudentByStudentId(String studentId) throws SQLException {
-        Student student = null;
         String sql = "SELECT * FROM students WHERE student_id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, studentId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    student = extractStudentFromResultSet(rs);
+                    return extractStudentFromResultSet(rs);
                 }
             }
         }
-        return student;
+        return null;
     }
 
     public void addStudent(Student student) throws SQLException {
@@ -112,16 +107,16 @@ public class StudentDAO {
             insertStmt.setString(4, student.getQualification());
             insertStmt.setString(5, student.getAcademicGap());
             insertStmt.setString(6, student.getPaymentMethod());
-            insertStmt.setInt(7, student.getTotalAmount() > 0 ? student.getTotalAmount() : 35000);
+            insertStmt.setInt(7, student.getTotalAmount());
             insertStmt.setString(8, student.getImageUrl());
-            insertStmt.setString(9, student.getStatus() != null ? student.getStatus() : "Pending");
-            insertStmt.setString(10, student.getPaymentStatus() != null ? student.getPaymentStatus() : "Pending");
-            insertStmt.setBoolean(11, student.isBlocked());
-            insertStmt.setInt(12, student.getBalanceAmount());
-            insertStmt.setString(13, student.getAdminMessage());
+            insertStmt.setString(9, "Pending");
+            insertStmt.setString(10, "Pending");
+            insertStmt.setBoolean(11, false);
+            insertStmt.setInt(12, 0);
+            insertStmt.setString(13, null);
             insertStmt.setLong(14, System.currentTimeMillis());
             insertStmt.setString(15, student.getReferredBy());
-            insertStmt.setLong(16, student.getRegistrationDate() > 0 ? student.getRegistrationDate() : System.currentTimeMillis());
+            insertStmt.setLong(16, System.currentTimeMillis());
             insertStmt.setString(17, "PENDING");
             insertStmt.setString(18, "PENDING");
 
