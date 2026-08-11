@@ -2,25 +2,15 @@ package com.bank.kodewalabrightfutureacademy.controller;
 
 import com.bank.kodewalabrightfutureacademy.dao.StudentDAO;
 import com.bank.kodewalabrightfutureacademy.model.Student;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
 @WebServlet("/students")
-@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-                 maxFileSize = 1024 * 1024 * 10,      // 10MB
-                 maxRequestSize = 1024 * 1024 * 50)   // 50MB
 public class StudentServlet extends HttpServlet {
 
     @Override
@@ -37,32 +27,42 @@ public class StudentServlet extends HttpServlet {
         StudentDAO studentDAO = (StudentDAO) getServletContext().getAttribute("studentDAO");
 
         if (studentDAO == null) {
+            System.err.println("[StudentServlet] StudentDAO is null!");
             response.sendRedirect(request.getContextPath() + "/login.jsp?db_error=true");
             return;
         }
 
         try {
             if ("register".equals(action)) {
-                // ... (register logic remains the same)
+                Student student = new Student();
+                student.setName(request.getParameter("name"));
+                student.setPhone(request.getParameter("phone"));
+                student.setEmail(request.getParameter("email"));
+                student.setQualification(request.getParameter("qualification"));
+                student.setAcademicGap(request.getParameter("academic_gap"));
+                student.setReferredBy(request.getParameter("referred_by"));
                 
+                String amountStr = request.getParameter("total_amount");
+                int totalAmount = (amountStr != null && !amountStr.isEmpty()) ? Integer.parseInt(amountStr) : 35000;
+                student.setTotalAmount(totalAmount);
+                
+                student.setStatus("Pending");
+                student.setPaymentStatus("Manual Entry");
+                
+                studentDAO.addStudent(student);
+                response.sendRedirect(request.getContextPath() + "/students");
+
             } else if ("delete".equals(action)) {
-                System.out.println("[StudentServlet] Processing 'delete' action.");
-                try {
-                    int id = Integer.parseInt(request.getParameter("id"));
-                    System.out.println("[StudentServlet] Attempting to delete student with ID: " + id);
-                    studentDAO.deleteStudent(id);
-                    System.out.println("[StudentServlet] studentDAO.deleteStudent() called successfully.");
-                } catch (NumberFormatException e) {
-                    System.err.println("[ERROR] Invalid ID format for delete action: " + request.getParameter("id"));
+                String idStr = request.getParameter("id");
+                if (idStr != null) {
+                    studentDAO.deleteStudent(Integer.parseInt(idStr));
                 }
                 response.sendRedirect(request.getContextPath() + "/students");
             }
-            // ... (other actions) ...
         } catch (Exception e) {
-            System.err.println("[StudentServlet] FATAL Exception in doPost: " + e.getMessage());
+            System.err.println("[StudentServlet] FATAL: " + e.getMessage());
             e.printStackTrace();
-            request.setAttribute("errorMessage", "An error occurred during the operation: " + e.getMessage());
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            response.sendRedirect(request.getContextPath() + "/students?error=true");
         }
     }
 }
